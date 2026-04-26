@@ -1,0 +1,45 @@
+===============================================================
+ Heterogeneous GNN — Wallet Account Classification (Elliptic++)
+===============================================================
+
+Dataset:            Elliptic++ (public Bitcoin blockchain)
+Task:               Wallet (account) classification — illicit vs. licit
+Split:              80/20 stratified on labeled wallet nodes
+Test set:           73,495 wallet nodes (5,720 illicit, 67,775 licit)
+
+--- Overall Metrics ---
+Accuracy:             0.9037
+F1-score (weighted):  0.9183
+ROC-AUC:              0.9718
+PR-AUC:               0.8289
+
+--- Precision at Fixed Recall Levels ---
+P@R1%:                1.0000
+P@R5%:                0.9995
+P@R10%:               0.9952
+P@R50%:               0.9445
+
+--- Per-Class Classification Report ---
+              precision    recall  f1-score   support
+
+     Licit       0.99      0.90      0.95     67,775
+     Illicit     0.44      0.92      0.60      5,720
+
+  accuracy                           0.90     73,495
+  macro avg      0.72      0.91      0.78     73,495
+weighted avg     0.95      0.90      0.92     73,495
+
+--- Confusion Matrix ---
+                 Predicted Licit  Predicted Illicit
+Actual Licit          61,127            6,648
+Actual Illicit           430            5,290
+
+--- Model Configuration ---
+Hidden channels:        64
+Message-passing layers: 2
+Dropout:                0.3
+Learning rate:          0.005
+Weight decay:           1e-4
+Loss:                   Cross-entropy (inverse-frequency class-weighted)
+Optimizer:              Adam
+Epochs:                 100
