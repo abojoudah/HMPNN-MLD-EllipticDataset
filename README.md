@@ -4,7 +4,7 @@ A reproducible study applying heterogeneous graph neural networks to the Ellipti
 
 **Authors:** Abdullah Almekhyal, Yousef Joudeh  
 **Affiliation:** Computer Science Department, College of Science, Kuwait University  
-**Course:** [Your Course Name]  
+**Course:** [CS466, Machine Learning]  
 **Anchor Paper:** [Finding Money Launderers Using Heterogeneous Graph Neural Networks](https://doi.org/10.1016/j.jfds.2025.100175) (Johannessen & Jullum, 2025)
 
 ---
