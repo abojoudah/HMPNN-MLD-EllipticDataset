@@ -1,10 +1,9 @@
-# Heterogeneous Graph Modeling for Anti-Money Laundering
+# Heterogeneous Graph Modeling for Anti-Money Laundering: A Reproducible Study on Elliptic++
 
 A reproducible study applying heterogeneous graph neural networks to the Elliptic++ Bitcoin dataset for anti-money laundering (AML) detection.
 
 **Authors:** Abdullah Almekhyal, Yousef Joudeh  
 **Affiliation:** Computer Science Department, College of Science, Kuwait University  
-**Course:** [CS466, Machine Learning]  
 **Anchor Paper:** [Finding Money Launderers Using Heterogeneous Graph Neural Networks](https://doi.org/10.1016/j.jfds.2025.100175) (Johannessen & Jullum, 2025)
 
 ---
@@ -17,11 +16,16 @@ This project reproduces and extends the heterogeneous graph-based AML detection 
 
 | Metric | Value |
 |--------|-------|
-| Accuracy | 97.85% |
-| ROC-AUC | 0.9901 |
-| PR-AUC | 0.9577 |
-| F1 (illicit class) | 0.89 |
-| Recall (illicit class) | 91% |
+| ROC-AUC | 0.9718 |
+| PR-AUC | 0.8289 |
+| F1 (weighted) | 0.9183 |
+| Accuracy | 0.9037 |
+| P@R1% | 1.0000 |
+| P@R5% | 0.9995 |
+| P@R10% | 0.9952 |
+| P@R50% | 0.9445 |
+| Recall (illicit class) | 0.92 |
+| F1 (illicit class) | 0.60 |
 
 ## Repository Structure
 
@@ -89,7 +93,7 @@ See [`data/README.md`](data/README.md) for detailed download and setup instructi
    - Create 80/20 stratified train/test split
    - Save the preprocessed graph as `hetero_graph_data.pt`
 
-**Expected runtime:** ~10-15 minutes on Colab
+**Expected runtime:** ~10–15 minutes on Colab
 
 ### Step 3: Train the Model
 
@@ -97,76 +101,27 @@ See [`data/README.md`](data/README.md) for detailed download and setup instructi
 2. Enable GPU: Runtime → Change runtime type → T4 GPU
 3. Update `GRAPH_FILE` path if needed
 4. Run all cells in order
-5. This will:
-   - Load the preprocessed graph
-   - Train the HeteroGNN model for 100 epochs
-   - Evaluate and print final metrics
-   - Save the trained model
+5. Results will be printed and saved to `results/`
 
-**Expected runtime:** ~20-30 minutes on Colab with T4 GPU
-
-### Step 4: View Results
-
-Final results are printed at the end of the training notebook and saved in [`results/`](results/).
+**Expected runtime:** ~20–30 minutes on T4 GPU
 
 ## Model Architecture
 
-```
-HeteroGNN (2-layer)
-├── HeteroConv Layer 1 (SAGEConv per edge type, hidden_dim=64)
-│   ├── wallet → sends → transaction
-│   ├── transaction → received_by → wallet
-│   ├── wallet → interacts_with → wallet
-│   └── transaction → flows_to → transaction
-├── ReLU + Dropout(0.3)
-├── HeteroConv Layer 2 (SAGEConv per edge type, hidden_dim=64)
-├── ReLU
-└── Linear(64 → 2) → Softmax
-```
+The model is a heterogeneous GNN inspired by the HMPNN-sum variant from the anchor paper, implemented using PyTorch Geometric's `HeteroConv` module with `SAGEConv` operators per relation type.
 
-**Key hyperparameters:**
-
-| Parameter | Value |
-|-----------|-------|
+| Hyperparameter | Value |
+|----------------|-------|
 | Hidden channels | 64 |
-| Message-passing layers | 2 |
+| Conv layers | 2 |
 | Dropout | 0.3 |
+| Optimizer | Adam |
 | Learning rate | 0.005 |
 | Weight decay | 1e-4 |
-| Loss | Cross-entropy (class-weighted) |
-| Optimizer | Adam |
+| Loss | Cross-Entropy (class-weighted) |
 | Epochs | 100 |
-
-## Comparison with Anchor Paper
-
-| Aspect | Ours (Elliptic++) | Anchor (DNB) |
-|--------|-------------------|--------------|
-| Dataset | Public | Private |
-| Domain | Bitcoin | Banking |
-| Node types | 2 | 3 |
-| Edge types | 4 | 2 (9 meta-steps) |
-| Total nodes | 1,472,029 | 5,149,159 |
-| Total edges | 4,417,560 | 10,202,950 |
-| Task | Wallet classification | Individual classification |
-| Train/Test | 80/20 stratified | 80/20 stratified |
-
-## Dependencies
-
-See [`requirements.txt`](requirements.txt) for the full list. Main libraries:
-
-- Python 3.10+
-- PyTorch 2.x
-- PyTorch Geometric 2.7+
-- scikit-learn
-- pandas, numpy
-- matplotlib, seaborn
 
 ## References
 
 1. F. Johannessen and M. Jullum, "Finding Money Launderers Using Heterogeneous Graph Neural Networks," *Journal of Finance and Data Science*, vol. 11, 2025.
-2. Y. Elmougy and L. Liu, "Demystifying Fraudulent Transactions and Illicit Nodes in the Bitcoin Network for Financial Forensics," *Proc. 29th ACM KDD*, 2023.
-3. M. Weber et al., "Anti-Money Laundering in Bitcoin: Experimenting with Graph Convolutional Networks for Financial Forensics," arXiv:1908.02591, 2019.
-
-## License
-
-This project is for academic purposes only. The Elliptic++ dataset is subject to its own [license terms](https://github.com/git-disl/EllipticPlusPlus).
+2. Y. Elmougy and Y. Liu, "Demystifying Fraudulent Transactions and Illicit Nodes in the Bitcoin Network for Financial Forensics," in *Proc. 29th ACM SIGKDD*, 2023.
+3. M. Fey and J. E. Lenssen, "Fast Graph Representation Learning with PyTorch Geometric," 2019.
